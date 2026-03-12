@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligence Report — Crime Intelligence Unit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar">
+
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <svg class="police-badge-icon" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polygon
+                        points="27,2 34,10 44,8 46,18 54,24 50,34 54,44 44,46 40,54 27,50 14,54 10,46 0,44 4,34 0,24 8,18 10,8 20,10"
+                        fill="#0a1628" stroke="#c9a227" stroke-width="2" />
+                    <polygon
+                        points="27,8 33,14 41,12 43,20 49,25 46,33 49,41 41,43 38,50 27,46 16,50 13,43 5,41 8,33 5,25 11,20 13,12 21,14"
+                        fill="#0f2040" stroke="#c9a227" stroke-width="1" />
+                    <polygon points="27,17 29.5,24 37,24 31.5,28.5 33.5,36 27,31.5 20.5,36 22.5,28.5 17,24 24.5,24"
+                        fill="#c9a227" />
+                    <text x="27" y="43" text-anchor="middle" font-family="Arial" font-size="4" font-weight="bold"
+                        fill="#c9a227" letter-spacing="0.5">POLICE</text>
+                </svg>
+                <div class="nav-brand-text">
+                    <span class="nav-brand-title">Crime Intelligence Unit</span>
+                    <span class="nav-brand-sub">Indian Police Department</span>
+                </div>
+            </a>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">Home</a>
+                <div class="nav-divider"></div>
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/reports" class="nav-link active">Reports</a>
+                <!-- <a href="/digest" class="nav-link">Offline Digest</a> -->
+                <div class="nav-divider"></div>
+                <a href="/settings" class="nav-link">⚙ Settings</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========== PAGE BANNER ========== -->
+    <div class="page-banner">
+        <h1>Intelligence Report</h1>
+        <div class="gold-line"></div>
+        <p>Verified crime incident data extracted from monitored news sources</p>
+    </div>
+
+    <div class="container">
+
+        <!-- ===== REPORT META BAR ===== -->
+        <div class="results-meta-bar">
+            <span class="meta-pill">📅 {{ start_date }} → {{ end_date }}</span>
+            <span class="meta-pill">📰 {{ total }} verified incidents extracted</span>
+        </div>
+
+        <!-- ===== ACTION BAR ===== -->
+        <div class="action-bar">
+            <form action="/download_pdf" method="post" id="pdfDownloadForm" target="_blank" style="margin:0;">
+                <button type="submit" class="btn btn-primary" id="downloadPdfBtn" style="width:auto;">
+                    <span>📥</span> Generate Intel PDF
+                </button>
+            </form>
+            <a href="/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
+            <a href="/settings" class="btn btn-outline">⚙ New Scan</a>
+        </div>
+
+        {% if articles %}
+        <div class="articles-container">
+            {% for article in articles %}
+            <div class="article-card" id="article-{{ loop.index }}">
+                <div class="article-header">
+                    <span class="article-number">Incident #{{ loop.index }}</span>
+                    <h2>{{ article.title }}</h2>
+                    <div class="article-meta">
+                        <span class="meta-pill">📍 <strong>{{ article.district }}</strong></span>
+                        <span class="meta-pill">📰 {{ article.source }}</span>
+                        <span class="meta-pill">📅 {{ article.date }}</span>
+                        {% if article.lang %}
+                        <span class="meta-pill">🌐 {{ article.lang|upper }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="article-content">
+                    {% if article.full_content and article.full_content|length > 200 %}
+                    <div class="full-content prewrap">{{ article.full_content }}</div>
+                    {% else %}
+                    <div class="snippet prewrap">{{ article.body }}</div>
+                    <div class="hint">
+                        <span>ℹ️</span>
+                        <span>Partial extraction: Full content restricted by source. Displaying verified summary.</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if article.url %}
+                <div class="article-footer">
+                    <a href="{{ article.url }}" target="_blank" class="source-link">
+                        Open Original Source ↗
+                    </a>
+                    <span
+                        style="font-size:0.75rem; color:var(--text-secondary); letter-spacing:1px; text-transform:uppercase;">Verified
+                        Source</span>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="no-reports">
+            <div class="no-reports-icon">📡</div>
+            <h3>No Intelligence Found</h3>
+            <p>No articles matched the scan criteria. Try adjusting your keywords, districts, or date range in Settings.
+            </p>
+            <a href="/settings" class="btn btn-primary" style="width:auto; margin-top:1.5rem;">⚙ Reconfigure Scan</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="site-footer">
+        <p>© 2025 <span>Crime Intelligence Unit</span> — Indian Police Department | Confidential</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const downloadForm = document.getElementById('pdfDownloadForm');
+            const downloadBtn = document.getElementById('downloadPdfBtn');
+
+            if (downloadForm && downloadBtn) {
+                downloadForm.addEventListener('submit', function () {
+                    const orig = downloadBtn.innerHTML;
+                    downloadBtn.innerHTML = '<span class="loading"></span> Compiling PDF...';
+                    downloadBtn.disabled = true;
+                    setTimeout(() => {
+                        downloadBtn.innerHTML = orig;
+                        downloadBtn.disabled = false;
+                        showNotification('Intel PDF compiled successfully!', 'success');
+                    }, 2500);
+                });
+            }
+
+            function showNotification(message, type) {
+                const existing = document.querySelector('.notification');
+                if (existing) existing.remove();
+                const el = document.createElement('div');
+                el.className = `notification notification-${type}`;
+                el.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span><span>${message}</span>`;
+                document.body.appendChild(el);
+                setTimeout(() => {
+                    el.style.animation = 'slideInRight 0.4s reverse forwards';
+                    setTimeout(() => el.remove(), 400);
+                }, 4000);
+            }
+        });
+    </script>
+</body>
+
+</html>

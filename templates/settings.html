@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings — Crime Intelligence Unit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+        
+        .settings-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+        }
+        
+        .settings-section h3 {
+            color: var(--gold);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+            padding-bottom: 0.75rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--silver);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="password"],
+        .form-group input[type="number"],
+        .form-group input[type="date"],
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-darker);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-md);
+            color: var(--text-light);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.2);
+        }
+        
+        .form-group input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--gold);
+        }
+        
+        .help-text {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+            padding-bottom: 0.75rem;
+        }
+        
+        .panel-title {
+            color: var(--gold);
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: var(--gold);
+            color: var(--bg-darker);
+        }
+        
+        .btn-primary:hover {
+            background: #b58f2a;
+            transform: translateY(-1px);
+        }
+        
+        .btn-danger {
+            background: var(--red-alert);
+            color: var(--text-light);
+        }
+        
+        .btn-danger:hover {
+            background: #a8231a;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-darker);
+            border: 1px solid var(--border-gold);
+            color: var(--silver);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-dark);
+            color: var(--gold);
+        }
+        
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            color: #34d399;
+        }
+        
+        .alert-error {
+            background: rgba(192, 57, 43, 0.1);
+            border: 1px solid var(--red-alert);
+            color: #f87171;
+        }
+        
+        code {
+            background: #0a0f1a;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--gold);
+        }
+        
+        .note-box {
+            background: rgba(201, 162, 39, 0.05);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-top: 1rem;
+            border-left: 3px solid var(--gold);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <svg class="police-badge-icon" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polygon
+                        points="27,2 34,10 44,8 46,18 54,24 50,34 54,44 44,46 40,54 27,50 14,54 10,46 0,44 4,34 0,24 8,18 10,8 20,10"
+                        fill="#0a1628" stroke="#c9a227" stroke-width="2" />
+                    <polygon
+                        points="27,8 33,14 41,12 43,20 49,25 46,33 49,41 41,43 38,50 27,46 16,50 13,43 5,41 8,33 5,25 11,20 13,12 21,14"
+                        fill="#0f2040" stroke="#c9a227" stroke-width="1" />
+                    <polygon points="27,17 29.5,24 37,24 31.5,28.5 33.5,36 27,31.5 20.5,36 22.5,28.5 17,24 24.5,24"
+                        fill="#c9a227" />
+                    <text x="27" y="43" text-anchor="middle" font-family="Arial" font-size="4" font-weight="bold"
+                        fill="#c9a227" letter-spacing="0.5">POLICE</text>
+                </svg>
+                <div class="nav-brand-text">
+                    <span class="nav-brand-title">Crime Intelligence Unit</span>
+                    <span class="nav-brand-sub">Indian Police Department</span>
+                </div>
+            </a>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">Home</a>
+                <div class="nav-divider"></div>
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/reports" class="nav-link">Reports</a>
+                <!-- <a href="/digest" class="nav-link">Offline Digest</a> -->
+                <div class="nav-divider"></div>
+                <a href="/settings" class="nav-link active">⚙ Settings</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========== PAGE BANNER ========== -->
+    <div class="page-banner">
+        <h1>System Configuration</h1>
+        <div class="gold-line"></div>
+        <p>Configure intelligence extraction parameters, search defaults, and API integrations</p>
+    </div>
+
+    <div class="container">
+
+        {% if saved %}
+        <div class="alert alert-success">
+            <span>✅</span> System parameters updated and saved successfully.
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="alert alert-error">
+            <span>⚠️</span> {{ error }}
+        </div>
+        {% endif %}
+
+        <form action="/settings" method="post">
+
+            <!-- ===== SEARCH / SCAN PARAMETERS ===== -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-title">🔍 Scan Parameters</span>
+                    <span style="font-size:0.78rem; color: var(--text-secondary); letter-spacing:1px;">REQUIRED FOR INTELLIGENCE SCAN</span>
+                </div>
+
+                <!-- <div class="form-group">
+                    <label for="keyword">Search Keywords</label>
+                    <input type="text" id="keyword" name="keyword" value="{{ settings.keyword }}" placeholder="e.g. murder, theft, robbery, arrest">
+                    <span class="help-text">Comma-separated or space-separated keywords. Leave empty for default crime terms.</span>
+                </div> -->
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="default_district">Target Districts *</label>
+                        <input type="text" id="default_district" name="default_district"
+                            value="{{ settings.default_district }}" placeholder="e.g. Guntur, Delhi, Mumbai" required>
+                        <span class="help-text">Comma-separated list of districts to monitor.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="default_state">Primary State</label>
+                        <input type="text" id="default_state" name="default_state" value="{{ settings.default_state }}"
+                            placeholder="e.g. Andhra Pradesh">
+                        <span class="help-text">Optional. Narrows results to a specific state.</span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="start_date">Start Date</label>
+                        <input type="date" id="start_date" name="start_date"
+                            value="{{ settings.start_date if settings.start_date else '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="end_date">End Date</label>
+                        <input type="date" id="end_date" name="end_date"
+                            value="{{ settings.end_date if settings.end_date else '' }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== EXTRACTION DEFAULTS ===== -->
+            <div class="settings-grid">
+                <div class="settings-section">
+                    <h3>⚙️ Extraction Defaults</h3>
+
+                    <div class="form-group">
+                        <label for="default_languages">Language Codes</label>
+                        <input type="text" id="default_languages" name="default_languages"
+                            value="{{ settings.default_languages|join(',') }}" placeholder="en, te, hi" required>
+                        <span class="help-text">Codes: en (English), te (Telugu), hi (Hindi), ta (Tamil), kn (Kannada), ml (Malayalam)</span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="default_max_articles">Max Articles</label>
+                            <input type="number" id="default_max_articles" name="default_max_articles" min="1" max="100"
+                                value="{{ settings.default_max_articles }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="default_date_range">Lookback Window (days)</label>
+                            <input type="number" id="default_date_range" name="default_date_range" min="1" max="30"
+                                value="{{ settings.default_date_range }}" required>
+                            <span class="help-text">Default date range for new scans</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== API INTEGRATION ===== -->
+                <div class="settings-section">
+                    <h3>🔌 API Integrations</h3>
+
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="use_newsapi" name="use_newsapi" {% if settings.use_newsapi %}checked{% endif %}>
+                            <label for="use_newsapi">Enable NewsAPI Protocol <span style="font-size:0.75rem; color:var(--text-secondary);">(requires valid API key)</span></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newsapi_key">NewsAPI Auth Token</label>
+                        <input type="password" id="newsapi_key" name="newsapi_key"
+                            value="{{ settings.newsapi_key if settings.newsapi_key else '' }}"
+                            placeholder="Enter your NewsAPI authentication token...">
+                        <span class="help-text">Obtain your key from <a href="https://newsapi.org"
+                                target="_blank">newsapi.org</a></span>
+                    </div>
+                </div>
+            </div>
+            <!-- ===== ACTIONS ===== -->
+            <div class="panel" style="margin-top: 2rem;">
+                <div class="form-actions">
+                    <button type="submit" name="action" value="save" class="btn btn-primary">
+                        <span>💾</span> Save Configuration
+                    </button>
+                    <button type="submit" name="action" value="scan" class="btn btn-danger">
+                        <span>🚀</span> Save &amp; Launch Scan
+                    </button>
+                    <a href="/" class="btn btn-secondary">← Cancel</a>
+                </div>
+                <p style="margin-top:1rem; font-size:0.78rem; color:var(--text-secondary);">
+                    * Required fields. "Save &amp; Launch Scan" will save settings and immediately initiate a news
+                    extraction scan with these parameters. These settings are used for the next scan run.
+                </p>
+            </div>
+
+        </form>
+    </div>
+    <!-- ========== FOOTER ========== -->
+    <footer class="site-footer">
+        <p>© 2025 <span>Crime Intelligence Unit</span> — Indian Police Department | Confidential</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
+
+

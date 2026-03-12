@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Crime Intelligence Unit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar">
+       
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <svg class="police-badge-icon" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polygon
+                        points="27,2 34,10 44,8 46,18 54,24 50,34 54,44 44,46 40,54 27,50 14,54 10,46 0,44 4,34 0,24 8,18 10,8 20,10"
+                        fill="#0a1628" stroke="#c9a227" stroke-width="2" />
+                    <polygon
+                        points="27,8 33,14 41,12 43,20 49,25 46,33 49,41 41,43 38,50 27,46 16,50 13,43 5,41 8,33 5,25 11,20 13,12 21,14"
+                        fill="#0f2040" stroke="#c9a227" stroke-width="1" />
+                    <polygon points="27,17 29.5,24 37,24 31.5,28.5 33.5,36 27,31.5 20.5,36 22.5,28.5 17,24 24.5,24"
+                        fill="#c9a227" />
+                    <text x="27" y="43" text-anchor="middle" font-family="Arial" font-size="4" font-weight="bold"
+                        fill="#c9a227" letter-spacing="0.5">POLICE</text>
+                </svg>
+                <div class="nav-brand-text">
+                    <span class="nav-brand-title">Crime Intelligence Unit</span>
+                    <span class="nav-brand-sub">Indian Police Department</span>
+                </div>
+            </a>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">Home</a>
+                <div class="nav-divider"></div>
+                <a href="/dashboard" class="nav-link active">Dashboard</a>
+                <a href="/reports" class="nav-link">Reports</a>
+                <!-- <a href="/digest" class="nav-link">Offline Digest</a> -->
+                <div class="nav-divider"></div>
+                <a href="/settings" class="nav-link">⚙ Settings</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========== PAGE BANNER ========== -->
+    <div class="page-banner">
+        <h1>Intelligence Dashboard</h1>
+        <div class="gold-line"></div>
+        <p>Monitor crime extraction reports and track recent intelligence activity across districts</p>
+    </div>
+
+    <div class="container">
+
+        {% if error %}
+        <div class="alert alert-error">
+            <span>⚠️</span> {{ error }}
+        </div>
+        {% endif %}
+
+        <!-- ===== QUICK ACTION BAR ===== -->
+        <div class="dashboard-header">
+            <div>
+                <h2>📋 Extraction Reports</h2>
+                <p>Showing all past intelligence scans. Use Settings to configure and launch a new scan.</p>
+            </div>
+            <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                <a href="/settings" class="btn btn-primary" style="width:auto;">
+                    <span>🚀</span> New Scan
+                </a>
+            </div>
+        </div>
+
+        <!-- ===== REPORTS GRID ===== -->
+        {% if reports %}
+        <div class="reports-grid">
+            {% for report in reports %}
+            <div class="report-card">
+                <div class="report-card-top">
+                    <div class="report-badge">
+                        <span>📁</span>
+                        <span>Intel Report</span>
+                    </div>
+                    <div class="report-date">
+                        {{ report.timestamp[:10] }} &nbsp;·&nbsp; {{ report.timestamp[11:16] }}
+                    </div>
+                </div>
+                <div class="report-body">
+                    <h3>{{ report.keyword[:60] }}{% if report.keyword|length > 60 %}...{% endif %}</h3>
+                    <div class="meta-tags">
+                        <span class="meta-tag">📍 {{ report.districts|join(', ') }}</span>
+                        <span class="meta-tag">📰 {{ report.total_articles }} incidents</span>
+                    </div>
+                </div>
+                <div class="report-footer">
+                    <a href="/view_report/{{ report.id }}" class="btn btn-small btn-outline">View Report →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="no-reports">
+            <div class="no-reports-icon">🗂️</div>
+            <h3>No Reports Available</h3>
+            <p>No extraction history found. Configure and launch a scan from the Settings page to begin.</p>
+            <a href="/settings" class="btn btn-primary" style="width:auto; margin-top:1.5rem;">
+                <span>⚙</span> Go to Settings
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="site-footer">
+        <p>© 2025 <span>Crime Intelligence Unit</span> — Indian Police Department | Confidential</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Intelligence Unit — Indian Police Department</title>
+    <meta name="description"
+        content="Official Crime Intelligence Unit portal for monitoring, tracking, and analyzing crime news across Indian districts.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar">
+        
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <!-- Police Badge SVG -->
+                <svg class="police-badge-icon" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polygon
+                        points="27,2 34,10 44,8 46,18 54,24 50,34 54,44 44,46 40,54 27,50 14,54 10,46 0,44 4,34 0,24 8,18 10,8 20,10"
+                        fill="#0a1628" stroke="#c9a227" stroke-width="2" />
+                    <polygon
+                        points="27,8 33,14 41,12 43,20 49,25 46,33 49,41 41,43 38,50 27,46 16,50 13,43 5,41 8,33 5,25 11,20 13,12 21,14"
+                        fill="#0f2040" stroke="#c9a227" stroke-width="1" />
+                    <polygon points="27,17 29.5,24 37,24 31.5,28.5 33.5,36 27,31.5 20.5,36 22.5,28.5 17,24 24.5,24"
+                        fill="#c9a227" />
+                    <text x="27" y="43" text-anchor="middle" font-family="Arial" font-size="4" font-weight="bold"
+                        fill="#c9a227" letter-spacing="0.5">POLICE</text>
+                </svg>
+                <div class="nav-brand-text">
+                    <span class="nav-brand-title">Crime Intelligence Unit</span>
+                    <span class="nav-brand-sub">Indian Police Department</span>
+                </div>
+            </a>
+            <div class="nav-menu">
+                <a href="/" class="nav-link active">Home</a>
+                <div class="nav-divider"></div>
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/reports" class="nav-link">Reports</a>
+                <!-- <a href="/digest" class="nav-link">Offline Digest</a> -->
+                <div class="nav-divider"></div>
+                <a href="/settings" class="nav-link">⚙ Settings</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========== HERO ========== -->
+    <section class="hero-section">
+        <div class="hero-badge-wrapper">
+            <svg width="130" height="130" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polygon
+                    points="27,1 34,9 44,7 46,17 54,23 50,33 54,43 44,45 40,53 27,49 14,53 10,45 0,43 4,33 0,23 8,17 10,7 20,9"
+                    fill="#0a1628" stroke="#c9a227" stroke-width="2" />
+                <polygon
+                    points="27,7 33,13 41,11 43,19 49,24 46,32 49,40 41,42 38,49 27,45 16,49 13,42 5,40 8,32 5,24 11,19 13,11 21,13"
+                    fill="#0f2040" stroke="#c9a227" stroke-width="1.5" />
+                <polygon points="27,16 29.5,23 37,23 31.5,27.5 33.5,35 27,30.5 20.5,35 22.5,27.5 17,23 24.5,23"
+                    fill="#c9a227" />
+                <circle cx="27" cy="27" r="6" fill="none" stroke="#c9a227" stroke-width="0.8" opacity="0.4" />
+                <text x="27" y="44" text-anchor="middle" font-family="Arial" font-size="3.5" font-weight="bold"
+                    fill="#c9a227" letter-spacing="1">C · I · U</text>
+            </svg>
+        </div>
+
+        <p class="hero-tagline">Official Law Enforcement Technology Platform</p>
+        <h1 class="hero-title">Crime Intelligence<br><span>Monitoring System</span></h1>
+        <p class="hero-subtitle">Indian Police Department — Digital Operations Wing</p>
+
+        <div class="gold-line"></div>
+
+        <p class="hero-description">
+            A centralized, AI-powered intelligence portal used by law enforcement agencies to monitor, extract, and
+            analyze
+            crime-related news across all Indian districts. This platform aggregates real-time data from multiple
+            verified
+            news sources, enabling officers to identify crime patterns, track incident frequencies, and generate
+            structured
+            intelligence reports for operational decision-making.
+        </p>
+
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number">700+</span>
+                <span class="stat-label">Districts Monitored</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">Live Monitoring</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">15+</span>
+                <span class="stat-label">News Sources</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">AI</span>
+                <span class="stat-label">Powered Analysis</span>
+            </div>
+        </div>
+
+        <div class="hero-cta">
+            <a href="/dashboard" class="btn btn-primary" style="width:auto;">
+                <span>📊</span> Open Dashboard
+            </a>
+            <a href="/settings" class="btn btn-outline">
+                <span>⚙</span> Configure System
+            </a>
+        </div>
+
+        <div class="hero-features">
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <div class="feature-title">Multi-Source Aggregation</div>
+                <div class="feature-desc">Pulls verified crime articles from GNews, NewsAPI and regional sources across
+                    all Indian states.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🗺️</div>
+                <div class="feature-title">District Intelligence</div>
+                <div class="feature-desc">Filter by specific districts and states to pinpoint crime activity in target
+                    jurisdiction areas.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <div class="feature-title">Intelligence Reports</div>
+                <div class="feature-desc">Generate structured PDF intelligence reports for briefings, case files and
+                    inter-department sharing.</div>
+            </div>
+<div class="feature-card center-card">
+    <div class="feature-icon">🌐</div>
+    <div class="feature-title">Multilingual Coverage</div>
+    <div class="feature-desc">
+        Supports English, Telugu, Hindi and other regional languages for comprehensive coverage.
+    </div>
+</div>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="site-footer">
+        <p>© 2025 <span>Crime Intelligence Unit</span> — Indian Police Department | Digital Operations Wing |
+            Confidential Law Enforcement Tool</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

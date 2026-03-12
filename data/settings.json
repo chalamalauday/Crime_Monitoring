@@ -1,0 +1,15 @@
+{
+  "default_state": "Andhra pradesh",
+  "default_district": "Guntur",
+  "default_languages": [
+    "en",
+    "te"
+  ],
+  "default_max_articles": 30,
+  "default_date_range": 2,
+  "use_newsapi": true,
+  "newsapi_key": "8651ba16daac424ba63d3813519f9f89",
+  "keyword": "",
+  "start_date": "2026-03-10",
+  "end_date": "2026-03-12"
+}
