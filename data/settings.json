@@ -5,11 +5,34 @@
     "en",
     "te"
   ],
-  "default_max_articles": 30,
+  "default_max_articles": 50,
   "default_date_range": 2,
-  "use_newsapi": true,
+  "use_newsdata": false,
+  "use_rapidapi": false,
+  "use_newsapi": false,
+  "newsdata_key": "pub_0e32ce33ebfd4398b28a15f0d6060000",
+  "rapidapi_key": "6206b6c603msh4143be128d63ba2p17d5cajsn31d421afa009",
   "newsapi_key": "8651ba16daac424ba63d3813519f9f89",
   "keyword": "",
-  "start_date": "2026-03-10",
-  "end_date": "2026-03-12"
+  "start_date": "2026-03-01",
+  "end_date": "2026-03-18",
+  "include_keywords": "",
+  "exclude_keywords": "movie,cinema,sports,cricket,health,entertainment",
+  "crime_categories": [
+    "theft",
+    "robbery",
+    "murder",
+    "assault",
+    "drug",
+    "fraud",
+    "arrest",
+    "rape",
+    "kidnap",
+    "cyber crime",
+    "dacoity",
+    "ganja",
+    "ndps",
+    "fir"
+  ],
+  "offline_target_district": "Guntur"
 }

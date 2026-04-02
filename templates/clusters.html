@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Story Clusters — Crime Intelligence Unit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <img src="{{ url_for('static', filename='ap_police_logo.png') }}" alt="AP Police" class="nav-logo">
+                <div class="nav-brand-text">
+                    <span class="nav-brand-title">Crime Intelligence Unit</span>
+                    <span class="nav-brand-sub">Andhra Pradesh Police Department</span>
+                </div>
+            </a>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">Home</a>
+                <div class="nav-divider"></div>
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/reports" class="nav-link active">Reports</a>
+                <a href="/digest" class="nav-link">Offline Digest</a>
+                <div class="nav-divider"></div>
+                <a href="/settings" class="nav-link">Settings</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-banner">
+        <h1>Story Clusters</h1>
+        <div class="gold-line"></div>
+        <p>Incidents grouped across multiple publishers — identifying competing views</p>
+    </div>
+
+    <div class="container">
+
+        <div class="results-meta-bar">
+            <span class="meta-pill">{{ total_clusters }} clusters</span>
+            <span class="meta-pill">{{ total_articles }} total articles</span>
+        </div>
+
+        <div class="action-bar">
+            <a href="javascript:history.back()" class="btn btn-secondary">← Back to Report</a>
+            <form action="/download_pdf" method="post" target="_blank" style="margin:0;">
+                <button type="submit" class="btn btn-primary" style="width:auto;">📄 Download PDF</button>
+            </form>
+        </div>
+
+        {% if clusters %}
+        <div class="clusters-container">
+            {% for group in clusters %}
+            <div class="cluster-group">
+                <div class="cluster-group-header">
+                    <div class="cluster-title-row">
+                        <span class="cluster-id-badge">Cluster {{ loop.index }}</span>
+                        <h2 class="cluster-topic">{{ group.label }}</h2>
+                    </div>
+                    <div class="cluster-stats">
+                        <span class="meta-pill">{{ group.articles | length }} source(s)</span>
+                        {% if group.district %}<span class="meta-pill">{{ group.district }}</span>{% endif %}
+                        {% if group.date %}<span class="meta-pill">{{ group.date }}</span>{% endif %}
+                    </div>
+                </div>
+
+                {% if group.summary %}
+                <div class="cluster-summary">
+                    <strong>📋 Cluster Summary:</strong> {{ group.summary }}
+                </div>
+                {% endif %}
+
+                {% if group.competing_views %}
+                <div class="competing-views">
+                    <div class="cv-header">⚖️ Competing Views Analysis</div>
+                    <div class="cv-insight">{{ group.competing_views.insight }}</div>
+                    <div class="views-list">
+                        {% for view in group.competing_views.views %}
+                        <div class="view-item">
+                            <span class="view-source">{{ view.source }}</span>
+                            <span class="view-headline">{{ view.headline }}</span>
+                            {% if view.url %}
+                            <a href="{{ view.url }}" target="_blank" class="source-link-small">↗</a>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="cluster-articles">
+                    {% for article in group.articles %}
+                    <div class="cluster-article-row">
+                        <div class="cluster-article-info">
+                            <h4>{{ article.title }}</h4>
+                            <div class="news-card-meta">
+                                <span class="meta-pill">{{ article.source }}</span>
+                                <span class="meta-pill">{{ article.date }}</span>
+                                <span class="meta-pill">{{ article.district }}</span>
+                                {% if article.relevance_reason %}
+                                <span class="meta-pill relevance-tag" title="{{ article.relevance_reason }}">✓
+                                    Relevant</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if article.url %}
+                        <a href="{{ article.url }}" target="_blank" class="btn btn-small btn-outline">Read ↗</a>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="no-reports">
+            <h3>No Clusters Available</h3>
+            <p>Run a new scan to generate story clusters.</p>
+            <a href="/settings" class="btn btn-primary" style="width:auto; margin-top:1.5rem;">New Scan</a>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <footer class="site-footer">
+        <p>© 2025 <span>Crime Intelligence Unit</span> — Andhra Pradesh Police Department | Confidential</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

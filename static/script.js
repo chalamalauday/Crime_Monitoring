@@ -133,8 +133,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (useNewsapiCheckbox && newsapiKeyInput) {
         const toggleNewsapiKey = function() {
             newsapiKeyInput.disabled = !useNewsapiCheckbox.checked;
-            if (!useNewsapiCheckbox.checked) {
-                newsapiKeyInput.value = '';
+            const newsapiCard = useNewsapiCheckbox.closest('.source-card');
+            if (newsapiCard) {
+                newsapiCard.classList.toggle('source-card-active', useNewsapiCheckbox.checked);
             }
         };
         

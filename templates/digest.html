@@ -7,153 +7,145 @@
     <title>Offline Digest — Crime Intelligence Unit</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        .digest-form {
-            background-color: var(--card-bg);
+        .digest-upload-zone {
+            background: var(--card-bg);
+            border: 2px dashed rgba(201, 162, 39, 0.4);
+            border-radius: var(--radius-lg);
             padding: 2rem;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
             margin-bottom: 2rem;
-        }
-
-        .spinner-container {
-            display: none;
             text-align: center;
-            padding: 2rem;
-            margin-top: 1rem;
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
+            transition: border-color 0.2s;
         }
 
-        .spinner {
-            border: 4px solid var(--border-color);
-            border-top: 4px solid var(--accent-gold);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem auto;
+        .digest-upload-zone:hover {
+            border-color: var(--gold);
         }
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .article-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .article-card h3 {
-            color: var(--text-light);
-            margin-top: 0;
-            margin-bottom: 0.5rem;
-        }
-
-        .article-meta {
-            font-size: 0.9rem;
-            color: var(--text-muted);
+        .upload-icon {
+            font-size: 3rem;
             margin-bottom: 1rem;
         }
 
-        .article-tags {
-            margin-top: 1rem;
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
         }
 
-        .tag {
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
             display: inline-block;
-            background-color: var(--bg-darker);
-            color: var(--accent-gold);
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-            border: 1px solid var(--accent-gold-dim);
+            padding: 0.75rem 2rem;
+            background: rgba(201, 162, 39, 0.15);
+            border: 1px solid var(--gold);
+            border-radius: var(--radius-md);
+            color: var(--gold);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .file-input-label:hover {
+            background: rgba(201, 162, 39, 0.3);
+        }
+
+        .digest-results {
+            margin-top: 2rem;
         }
 
         .comparison-block {
-            background-color: var(--card-bg);
-            border-left: 4px solid var(--accent-gold);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            border-left: 3px solid var(--gold);
+            padding: 1rem 1.5rem;
+            background: rgba(201, 162, 39, 0.04);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin-bottom: 1rem;
         }
 
         .download-banner {
-            background-color: rgba(201, 162, 39, 0.1);
-            border: 1px solid var(--accent-gold);
+            background: rgba(201, 162, 39, 0.08);
+            border: 1px solid var(--gold);
             padding: 1.5rem;
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
         }
 
-        .digest-filter-row {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .recent-digest-panel {
-            margin-bottom: 2rem;
-        }
-
-        .recent-digest-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
+        .recent-list {
             display: grid;
             gap: 0.75rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
         }
 
-        .recent-digest-item {
+        .recent-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(6, 13, 26, 0.55);
-            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border-navy);
             border-radius: 6px;
             padding: 0.9rem 1rem;
         }
 
-        .recent-digest-name {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            word-break: break-all;
+        .spinner-box {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-navy);
+            border-radius: var(--radius-md);
+            margin: 1rem 0;
         }
 
-        .recent-digest-meta {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin-top: 0.2rem;
+        .spinner {
+            border: 4px solid var(--border-navy);
+            border-top: 4px solid var(--gold);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
         }
 
-        .digest-empty {
-            color: var(--text-muted);
-            margin: 0;
-        }
-
-        @media (max-width: 768px) {
-            .digest-filter-row {
-                flex-direction: column;
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
             }
+        }
 
-            .recent-digest-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.8rem;
-            }
+        .pipeline-error {
+            background: rgba(255, 60, 60, 0.1);
+            border: 1px solid rgba(255, 60, 60, 0.4);
+            color: #ff6060;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-success {
+            background: rgba(0, 255, 127, 0.1);
+            border: 1px solid rgba(0, 255, 127, 0.35);
+            color: #00ff7f;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+        }
+
+        .alert-error {
+            background: rgba(255, 0, 127, 0.1);
+            border: 1px solid rgba(255, 0, 127, 0.4);
+            color: #ff007f;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -162,24 +154,12 @@
 
     <!-- ========== NAVBAR ========== -->
     <nav class="navbar">
-        <!-- <div class="alert-bar">🔒 Official Crime Intelligence Resource Portal — Authorized Personnel Only</div> -->
         <div class="nav-container">
             <a href="/" class="nav-brand">
-                <svg class="police-badge-icon" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <polygon
-                        points="27,2 34,10 44,8 46,18 54,24 50,34 54,44 44,46 40,54 27,50 14,54 10,46 0,44 4,34 0,24 8,18 10,8 20,10"
-                        fill="#0a1628" stroke="#c9a227" stroke-width="2" />
-                    <polygon
-                        points="27,8 33,14 41,12 43,20 49,25 46,33 49,41 41,43 38,50 27,46 16,50 13,43 5,41 8,33 5,25 11,20 13,12 21,14"
-                        fill="#0f2040" stroke="#c9a227" stroke-width="1" />
-                    <polygon points="27,17 29.5,24 37,24 31.5,28.5 33.5,36 27,31.5 20.5,36 22.5,28.5 17,24 24.5,24"
-                        fill="#c9a227" />
-                    <text x="27" y="43" text-anchor="middle" font-family="Arial" font-size="4" font-weight="bold"
-                        fill="#c9a227" letter-spacing="0.5">POLICE</text>
-                </svg>
+                <img src="{{ url_for('static', filename='ap_police_logo.png') }}" alt="AP Police" class="nav-logo">
                 <div class="nav-brand-text">
                     <span class="nav-brand-title">Crime Intelligence Unit</span>
-                    <span class="nav-brand-sub">Indian Police Department</span>
+                    <span class="nav-brand-sub">Andhra Pradesh Police Department</span>
                 </div>
             </a>
             <div class="nav-menu">
@@ -187,9 +167,9 @@
                 <div class="nav-divider"></div>
                 <a href="/dashboard" class="nav-link">Dashboard</a>
                 <a href="/reports" class="nav-link">Reports</a>
-                <!-- <a href="/digest" class="nav-link active">Offline Digest</a> -->
+                <a href="/digest" class="nav-link active">Offline Digest</a>
                 <div class="nav-divider"></div>
-                <a href="/settings" class="nav-link">⚙ Settings</a>
+                <a href="/settings" class="nav-link">Settings</a>
             </div>
         </div>
     </nav>
@@ -198,176 +178,182 @@
     <div class="page-banner">
         <h1>Offline Document Digest</h1>
         <div class="gold-line"></div>
-        <p>Upload raw unstructured documents (.docx) to automatically translate, extract, cluster, and report
-            intelligence.</p>
+        <p>Upload police department newspaper clippings (.docx or .pdf) to automatically extract, cluster, and generate
+            a daily intelligence report.</p>
     </div>
 
     <div class="container">
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div class="alert {% if category == 'success' %}alert-success{% else %}alert-error{% endif %}">
-            <span>{% if category == 'success' %}Success:{% else %}Error:{% endif %}</span> {{ message }}
-        </div>
-        {% endfor %}
+        {% if pipeline_error %}
+        <div class="pipeline-error">⚠️ {{ pipeline_error }}</div>
         {% endif %}
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}{% for category, message in messages %}
+        <div class="{% if category == 'success' %}alert-success{% else %}alert-error{% endif %}">
+            {% if category == 'success' %}✓{% else %}✗{% endif %} {{ message }}
+        </div>
+        {% endfor %}{% endif %}
         {% endwith %}
 
-        {% if error %}
-        <div class="alert alert-error">
-            <span>⚠️</span> {{ error }}
-        </div>
-        {% endif %}
-
         <!-- ===== UPLOAD FORM ===== -->
-        <div class="digest-form">
-            <h2>Process New Documents</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Select between 1 to 7 .docx files containing
-                news items or reports to be processed by the intelligence pipeline.</p>
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">Process New Documents</span>
+                <span style="font-size:0.78rem; color:var(--text-secondary);">PDF &amp; DOCX SUPPORTED</span>
+            </div>
 
             <form id="digestForm" action="/digest" method="POST" enctype="multipart/form-data">
 
-                <div class="form-group">
-                    <label class="form-label">Upload Documents (.docx only) *</label>
-                    <input type="file" name="files" class="form-control" accept=".docx" multiple required>
-                    <small style="color: var(--text-muted); display: block; margin-top: 0.5rem;">Max 7 files.</small>
-                </div>
-
-                <div class="form-row digest-filter-row">
-                    <div class="form-group" style="flex: 1;">
-                        <label class="form-label">Keywords Filter (Optional)</label>
-                        <input type="text" name="keywords" class="form-control"
-                            placeholder="e.g. murder, robbery, theft"
-                            value="{{ current_filters.keywords if current_filters else '' }}">
+                <div class="digest-upload-zone" id="dropZone">
+                    <div class="upload-icon">📂</div>
+                    <h3 style="color:var(--theme-ink); margin:0 0 0.5rem">Upload Document Files</h3>
+                    <p style="color:var(--text-secondary); margin:0 0 1.5rem">Supports <strong>.pdf</strong> and
+                        <strong>.docx</strong> — max 7 files
+                    </p>
+                    <div class="file-input-wrapper">
+                        <input type="file" name="files" id="fileInput" accept=".docx,.pdf" multiple required>
+                        <label class="file-input-label" for="fileInput">📎 Choose Files</label>
                     </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label class="form-label">Districts Filter (Optional)</label>
-                        <input type="text" name="districts" class="form-control"
-                            placeholder="e.g. Vizianagaram, Guntur"
-                            value="{{ current_filters.districts if current_filters else '' }}">
-                    </div>
+                    <div id="fileNames" style="margin-top:1rem; color:var(--text-secondary); font-size:0.85rem;"></div>
                 </div>
 
-                <div class="form-group" style="margin-top: 1rem;">
-                    <label class="form-label">Date Range (Optional)</label>
-                    <input type="text" name="date" class="form-control"
-                        placeholder="DD-MM-YYYY or DD-MM-YYYY to DD-MM-YYYY"
-                        value="{{ current_filters.date if current_filters else '' }}">
-                </div>
-
-                <div style="margin-top: 2rem;">
-                    <button type="submit" id="digestSubmitBtn" class="btn btn-primary" style="width: 100%;">
-                        <span>⚡</span> Run Intelligence Pipeline
-                    </button>
-                </div>
+                <button type="submit" id="digestSubmitBtn" class="btn btn-primary" style="width:100%; margin-top:1rem;">
+                    🚀 Run Intelligence Pipeline
+                </button>
             </form>
+
+            <!-- Processing Spinner -->
+            <div id="processingSpinner" class="spinner-box">
+                <div class="spinner"></div>
+                <h3 style="color:var(--theme-ink);">Processing Documents</h3>
+                <p style="color:var(--text-secondary);">Extracting articles, clustering topics, and generating insights.
+                    This may take a few minutes...</p>
+            </div>
         </div>
 
-        <!-- Processing Indicator -->
-        <div id="processingSpinner" class="spinner-container">
-            <div class="spinner"></div>
-            <h3>Processing Documents</h3>
-            <p style="color: var(--text-muted);">The AI pipeline is currently translating text, extracting entities, and
-                clustering topics. This may take a few minutes depending on the size of the documents...</p>
-        </div>
-
-        <div class="digest-form recent-digest-panel">
-            <h2>Recent Digests</h2>
+        <!-- ===== RECENT DIGESTS ===== -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">Recent Digest PDFs</span>
+            </div>
             {% if recent_digests %}
-            <ul class="recent-digest-list">
+            <ul class="recent-list">
                 {% for item in recent_digests %}
-                <li class="recent-digest-item">
+                <li class="recent-item">
                     <div>
-                        <div class="recent-digest-name">{{ item.filename }}</div>
-                        <div class="recent-digest-meta">
-                            Generated: {{ item.modified_at.strftime("%d-%m-%Y %I:%M %p") }} | Size: {{ item.size_kb }} KB
+                        <div style="color:var(--text-primary); font-size:0.9rem;">{{ item.filename }}</div>
+                        <div style="color:var(--text-secondary); font-size:0.8rem;">
+                            {{ item.modified_at.strftime("%d-%m-%Y %I:%M %p") }} | {{ item.size_kb }} KB
                         </div>
                     </div>
-                    <a href="{{ url_for('download_digest_pdf', filename=item.filename) }}" class="btn btn-secondary btn-small">Download</a>
+                    <a href="{{ url_for('download_digest_pdf', filename=item.filename) }}"
+                        class="btn btn-small btn-outline">⬇ Download</a>
                 </li>
                 {% endfor %}
             </ul>
             {% else %}
-            <p class="digest-empty">No generated digest PDFs found in <code>data/generated/</code> yet.</p>
+            <p style="color:var(--text-secondary);">No generated digest PDFs yet. Upload and process files above.</p>
             {% endif %}
         </div>
 
         <!-- ===== RESULTS SECTION ===== -->
-        {% if filtered_articles or comparisons or download_filename %}
-        <div class="results-section" id="resultsArea">
-            <h2 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                Pipeline Results
-            </h2>
+        {% if filtered_articles or comparisons or cluster_groups or download_filename %}
+        <div class="digest-results" id="resultsArea">
+            <h2 style="color:var(--theme-ink); margin-bottom:1.5rem;">Pipeline Results</h2>
+
+            <div class="results-meta-bar" style="margin-bottom:1.5rem;">
+                <span class="meta-pill">{{ filtered_articles|length }} article(s)</span>
+                {% if cluster_groups %}<span class="meta-pill">{{ cluster_groups|length }} incident group(s)</span>{% endif %}
+                {% if comparisons %}<span class="meta-pill">{{ comparisons|length }} comparison(s)</span>{% endif %}
+            </div>
 
             {% if download_filename %}
             <div class="download-banner">
                 <div>
-                    <h3 style="margin-top: 0; margin-bottom: 0.5rem; color: var(--text-light);">PDF Report Generated
-                        Successfully</h3>
-                    <p style="margin: 0; color: var(--text-muted);">A comprehensive intelligence report has been built
-                        from the processed documents.</p>
+                    <h3 style="margin:0 0 0.25rem; color:var(--theme-ink);">PDF Digest Generated Successfully</h3>
+                    <p style="margin:0; color:var(--text-secondary);">{{ filtered_articles|length }} articles processed
+                        into a structured intelligence report.</p>
                 </div>
-                <div>
-                    <a href="/download/digest/{{ download_filename }}" class="btn btn-primary">
-                        <span>📥</span> Download PDF
-                    </a>
-                </div>
+                <a href="/download/digest/{{ download_filename }}" class="btn btn-primary">⬇ Download PDF Report</a>
             </div>
             {% endif %}
 
-            {% if filtered_articles %}
-            <div style="margin-bottom: 2rem;">
-                <h3 style="color: var(--accent-gold);">Filtered Articles ({{ filtered_articles|length }})</h3>
-                {% for article in filtered_articles %}
-                <div class="article-card">
-                    <h3>{{ article.title }}</h3>
-                    <div class="article-meta">
-                        <span><strong>Source:</strong> {{ article.source }}</span> |
-                        <span><strong>Date:</strong> {{ article.date }}</span> |
-                        <span><strong>District:</strong> {{ article.district }}</span> |
-                        <span><strong>Cluster ID:</strong> {{ article.cluster_id }}</span>
-                    </div>
-                    <p>{{ article.body[:300] }}{% if article.body|length > 300 %}...{% endif %}</p>
-
-                    <div class="article-tags">
-                        {% for tag in article.tags %}
-                        <span class="tag">{{ tag }}</span>
-                        {% endfor %}
+            <!-- Cluster Groups (Scenarios 3–6) -->
+            {% if cluster_groups %}
+            <h3 style="color:var(--theme-ink); margin-bottom:1rem;">Incident Groups ({{ cluster_groups|length }})</h3>
+            <div class="clusters-container">
+                {% for group in cluster_groups %}
+                <div class="cluster-group">
+                    <div class="cluster-group-header">
+                        <div class="cluster-title-row">
+                            <span class="cluster-id-badge">Cluster {{ loop.index }}</span>
+                            <h3 class="cluster-topic">{{ group.label }}</h3>
+                        </div>
+                        <div class="cluster-stats">
+                            <span class="meta-pill">{{ group.articles | length }} source(s)</span>
+                            {% if group.district %}<span class="meta-pill">{{ group.district }}</span>{% endif %}
+                            {% if group.date %}<span class="meta-pill">{{ group.date }}</span>{% endif %}
+                        </div>
                     </div>
 
-                    {% if article.related_history %}
-                    <div style="margin-top: 1rem; border-top: 1px dashed var(--border-color); padding-top: 0.5rem;">
-                        <strong style="color: var(--text-muted); font-size: 0.85rem;">Related History:</strong>
-                        <ul
-                            style="margin-top: 0.5rem; padding-left: 1.5rem; font-size: 0.9rem; color: var(--text-muted);">
-                            {% for h in article.related_history %}
-                            <li>{{ h.title }} ({{ h.date }}, {{ h.source }})</li>
-                            {% endfor %}
-                        </ul>
+                    {% if group.summary %}
+                    <div class="cluster-summary">
+                        <strong>Summary:</strong> {{ group.summary }}
                     </div>
                     {% endif %}
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
 
-            {% if comparisons %}
-            <div style="margin-bottom: 2rem;">
-                <h3 style="color: var(--accent-gold);">Source Comparisons ({{ comparisons|length }})</h3>
-                {% for comp in comparisons %}
-                <div class="comparison-block">
-                    <h4 style="margin-top: 0; color: var(--text-light);">Event: {{ comp.tags|join(', ') }} | Date: {{
-                        comp.date }} | District: {{ comp.district }}</h4>
-                    <p style="color: var(--text-muted); font-style: italic; margin-bottom: 1rem;">
-                        <strong>Insight:</strong> {{ comp.comparative_insight }}
-                    </p>
+                    {% if group.competing_views %}
+                    <div class="competing-views">
+                        <div class="cv-header">Competing Views Analysis</div>
+                        <div class="cv-insight">{{ group.competing_views.insight }}</div>
+                        {% if group.competing_views.views %}
+                        <div class="views-list">
+                            {% for view in group.competing_views.views %}
+                            <div class="view-item">
+                                <span class="view-source">{{ view.source }}</span>
+                                <span class="view-headline">{{ view.headline }}</span>
+                                {% if view.url %}
+                                <a href="{{ view.url }}" target="_blank" class="source-link-small">↗</a>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% if group.competing_views.merged_view %}
+                        <div style="margin-top:0.5rem; color:var(--text-secondary); font-size:0.85rem;">
+                            {{ group.competing_views.merged_view }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
 
-                    <div style="background-color: var(--bg-darker); padding: 1rem; border-radius: 4px;">
-                        {% for summ in comp.summaries %}
-                        <div style="margin-bottom: 1rem;">
-                            <strong style="color: var(--accent-gold);">{{ summ.source }}</strong>: {{ summ.title }}
-                            <p style="margin-top: 0.5rem; font-size: 0.9rem;">{{ summ.summary }}</p>
+                    <div class="cluster-articles">
+                        {% for article in group.articles %}
+                        <div class="cluster-article-row">
+                            <div class="cluster-article-info">
+                                <h4>{{ article.title }}</h4>
+                                <div class="news-card-meta">
+                                    {% set loc = article.detected_location if article.detected_location else article.district %}
+                                    {% if loc %}<span class="meta-pill">{{ loc }}</span>{% endif %}
+                                    {% if article.source %}<span class="meta-pill">{{ article.source }}</span>{% endif %}
+                                    {% if article.source_file %}<span class="meta-pill">{{ article.source_file }}</span>{% endif %}
+                                    {% if article.date %}<span class="meta-pill">{{ article.date }}</span>{% endif %}
+                                    {% if article.relevance_reason %}
+                                    <span class="meta-pill relevance-tag" title="{{ article.relevance_reason }}">✓ Relevant</span>
+                                    {% endif %}
+                                </div>
+                                {% set article_content = article.full_content if article.full_content else article.body %}
+                                {% if article_content %}
+                                <div class="cluster-article-content">
+                                    <div class="article-content-label">Full Article Content</div>
+                                    <div class="article-content-text">{{ article_content }}</div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% if article.url %}
+                            <a href="{{ article.url }}" target="_blank" class="btn btn-small btn-outline">Read</a>
+                            {% endif %}
                         </div>
                         {% endfor %}
                     </div>
@@ -376,35 +362,91 @@
             </div>
             {% endif %}
 
+            <!-- Flat Article List fallback (if no cluster_groups) -->
+            {% if filtered_articles and not cluster_groups %}
+            <h3 style="color:var(--theme-ink); margin-bottom:1rem;">Articles ({{ filtered_articles|length }})</h3>
+            <div class="intel-tiles">
+                {% for article in filtered_articles %}
+                <article class="intel-tile">
+                    <div class="intel-tile-main">
+                        <h3 class="intel-tile-title">{{ article.title }}</h3>
+                        <div class="intel-tile-meta">
+                            {% set loc = article.detected_location if article.detected_location else article.district %}
+                            {% if loc %}<span class="meta-pill">{{ loc }}</span>{% endif %}
+                            {% if article.source %}<span class="meta-pill">{{ article.source }}</span>{% endif %}
+                            {% if article.source_file %}<span class="meta-pill">{{ article.source_file }}</span>{% endif %}
+                            {% if article.date %}<span class="meta-pill">{{ article.date }}</span>{% endif %}
+                            {% if article.get('cluster_id') is not none %}<span class="meta-pill">Cluster {{ article.get('cluster_id') }}</span>{% endif %}
+                        </div>
+                        {% if article.relevance_reason %}
+                        <div class="intel-tile-note">✓ {{ article.relevance_reason }}</div>
+                        {% endif %}
+                        {% set article_content = article.full_content if article.full_content else article.body %}
+                        {% if article_content %}
+                        <div class="cluster-article-content" style="margin-top:0.9rem;">
+                            <div class="article-content-label">Full Article Content</div>
+                            <div class="article-content-text">{{ article_content }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Competing Views Section -->
+            {% if comparisons %}
+            <h3 style="color:var(--theme-ink); margin:2rem 0 1rem;">Competing Views Analysis ({{ comparisons|length }})</h3>
+            {% for comp in comparisons %}
+            <div class="comparison-block">
+                <h4 style="margin-top:0; color:var(--theme-ink);">{{ comp.get('cluster_label', 'Incident') }}</h4>
+                <p style="color:var(--text-secondary); font-style:italic;">⚖️ {{ comp.get('insight', '') }}</p>
+                {% for view in comp.get('views', []) %}
+                <div style="margin-bottom:0.75rem;">
+                    <strong style="color:var(--gold);">{{ view.source }}:</strong> {{ view.headline }}
+                    {% if view.body_snippet %}
+                    <p style="margin-top:0.25rem; font-size:0.85rem; color:var(--text-secondary);">{{
+                        view.body_snippet[:180] }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                {% if comp.get('merged_view') %}
+                <div style="border-top:1px dashed var(--border-navy); padding-top:0.5rem; margin-top:0.5rem;">
+                    <small style="color:var(--text-secondary);">Merged View: {{ comp.merged_view }}</small>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            {% endif %}
         </div>
         {% endif %}
 
     </div>
 
-    <!-- ========== FOOTER ========== -->
-    <footer class="site-footer" style="margin-top: 4rem;">
-        <p>© 2025 <span>Crime Intelligence Unit</span> — Indian Police Department | Confidential</p>
+    <footer class="site-footer" style="margin-top:4rem;">
+        <p>© 2025 <span>Crime Intelligence Unit</span> — Andhra Pradesh Police Department | Confidential</p>
     </footer>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const digestForm = document.getElementById('digestForm');
-            const submitBtn = document.getElementById('digestSubmitBtn');
-            const spinner = document.getElementById('processingSpinner');
-            const resultsArea = document.getElementById('resultsArea');
-
-            if (digestForm) {
-                digestForm.addEventListener('submit', function () {
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<span>⏳</span> Starting Pipeline...';
-                    spinner.style.display = 'block';
-                    if (resultsArea) {
-                        resultsArea.style.opacity = '0.5';
-                    }
-                });
-            }
+        // Show selected file names
+        document.getElementById('fileInput').addEventListener('change', function () {
+            const names = Array.from(this.files).map(f => f.name).join(', ');
+            document.getElementById('fileNames').textContent = names ? `Selected: ${names}` : '';
         });
+
+        // Show spinner on submit
+        document.getElementById('digestForm').addEventListener('submit', function () {
+            document.getElementById('digestSubmitBtn').disabled = true;
+            document.getElementById('digestSubmitBtn').innerHTML = '<span class="loading"></span> Starting Pipeline...';
+            document.getElementById('processingSpinner').style.display = 'block';
+        });
+
+        // Scroll to results
+        const resultsArea = document.getElementById('resultsArea');
+        if (resultsArea) {
+            setTimeout(() => resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+        }
     </script>
 </body>
 

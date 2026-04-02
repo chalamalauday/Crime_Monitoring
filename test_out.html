@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline Digest — Crime Intelligence Unit</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .digest-upload-zone {
+            background: var(--card-bg);
+            border: 2px dashed rgba(201, 162, 39, 0.4);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            transition: border-color 0.2s;
+        }
+
+        .digest-upload-zone:hover {
+            border-color: var(--gold);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: rgba(201, 162, 39, 0.15);
+            border: 1px solid var(--gold);
+            border-radius: var(--radius-md);
+            color: var(--gold);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .file-input-label:hover {
+            background: rgba(201, 162, 39, 0.3);
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--silver);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(5, 5, 16, 0.9);
+            border: 1px solid rgba(0, 243, 255, 0.4);
+            border-radius: var(--radius-md);
+            color: var(--white);
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .digest-results {
+            margin-top: 2rem;
+        }
+
+        .article-card-digest {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .article-card-digest h3 {
+            color: var(--white);
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+        }
+
+        .article-meta-digest {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--bg-darker);
+            color: var(--gold);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin: 0.2rem 0.2rem 0 0;
+            border: 1px solid rgba(201, 162, 39, 0.3);
+        }
+
+        .comparison-block {
+            border-left: 3px solid var(--gold);
+            padding: 1rem 1.5rem;
+            background: rgba(201, 162, 39, 0.04);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin-bottom: 1rem;
+        }
+
+        .download-banner {
+            background: rgba(201, 162, 39, 0.08);
+            border: 1px solid var(--gold);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .recent-list {
+            display: grid;
+            gap: 0.75rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .recent-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(6, 13, 26, 0.55);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.9rem 1rem;
+        }
+
+        .spinner-box {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin: 1rem 0;
+        }
+
+        .spinner {
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--gold);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .pipeline-error {
+            background: rgba(255, 60, 60, 0.1);
+            border: 1px solid rgba(255, 60, 60, 0.4);
+            color: #ff6060;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-success {
+            background: rgba(0, 255, 127, 0.1);
+            border: 1px solid rgba(0, 255, 127, 0.35);
+            color: #00ff7f;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+        }
+
+        .alert-error {
+            background: rgba(255, 0, 127, 0.1);
+            border: 1px solid rgba(255, 0, 127, 0.4);
+            color: #ff007f;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <img src="/static/ap_police_logo.png" alt="AP Police" class="nav-logo">
+                <div class="nav-brand-text">
+                    <span class="nav-brand-title">Crime Intelligence Unit</span>
+                    <span class="nav-brand-sub">Andhra Pradesh Police Department</span>
+                </div>
+            </a>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">Home</a>
+                <div class="nav-divider"></div>
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/reports" class="nav-link">Reports</a>
+                <a href="/digest" class="nav-link active">Offline Digest</a>
+                <div class="nav-divider"></div>
+                <a href="/settings" class="nav-link">Settings</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========== PAGE BANNER ========== -->
+    <div class="page-banner">
+        <h1>Offline Document Digest</h1>
+        <div class="gold-line"></div>
+        <p>Upload police department newspaper clippings (.docx or .pdf) to automatically extract, cluster, and generate
+            a daily intelligence report.</p>
+    </div>
+
+    <div class="container">
+
+        
+
+        
+        
+        <div class="alert-success">
+            ✓ Digest generated successfully! 4 articles processed.
+        </div>
+        
+        
+
+        <!-- ===== UPLOAD FORM ===== -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">Process New Documents</span>
+                <span style="font-size:0.78rem; color:var(--text-secondary);">PDF &amp; DOCX SUPPORTED</span>
+            </div>
+
+            <form id="digestForm" action="/digest" method="POST" enctype="multipart/form-data">
+
+                <div class="digest-upload-zone" id="dropZone">
+                    <div class="upload-icon">📂</div>
+                    <h3 style="color:var(--white); margin:0 0 0.5rem">Upload Document Files</h3>
+                    <p style="color:var(--text-secondary); margin:0 0 1.5rem">Supports <strong>.pdf</strong> and
+                        <strong>.docx</strong> — max 7 files
+                    </p>
+                    <div class="file-input-wrapper">
+                        <input type="file" name="files" id="fileInput" accept=".docx,.pdf" multiple required>
+                        <label class="file-input-label" for="fileInput">📎 Choose Files</label>
+                    </div>
+                    <div id="fileNames" style="margin-top:1rem; color:var(--text-secondary); font-size:0.85rem;"></div>
+                </div>
+
+                <div class="panel-header" style="margin-top:0.5rem;">
+                    <span class="panel-title" style="font-size:0.95rem;">Filter Options (Optional)</span>
+                </div>
+
+                <div class="filter-row">
+                    <div class="form-group">
+                        <label class="form-label">Keywords Filter</label>
+                        <input type="text" name="keywords" class="form-control"
+                            placeholder="e.g. murder, robbery, theft, arrest"
+                            value="">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Districts Filter</label>
+                        <input type="text" name="districts" class="form-control"
+                            placeholder="e.g. Vizianagaram, Guntur, Nellore"
+                            value="Vijayawada, Guntur">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date Range</label>
+                        <input type="text" name="date" class="form-control"
+                            placeholder="DD-MM-YYYY or DD-MM-YYYY to DD-MM-YYYY"
+                            value="12-03-2026 to 14-03-2026">
+                    </div>
+                </div>
+
+                <button type="submit" id="digestSubmitBtn" class="btn btn-primary" style="width:100%; margin-top:1rem;">
+                    🚀 Run Intelligence Pipeline
+                </button>
+            </form>
+
+            <!-- Processing Spinner -->
+            <div id="processingSpinner" class="spinner-box">
+                <div class="spinner"></div>
+                <h3 style="color:var(--white);">Processing Documents</h3>
+                <p style="color:var(--text-secondary);">Extracting articles, clustering topics, and generating insights.
+                    This may take a few minutes...</p>
+            </div>
+        </div>
+
+        <!-- ===== RECENT DIGESTS ===== -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">Recent Digest PDFs</span>
+            </div>
+            
+            <ul class="recent-list">
+                
+                <li class="recent-item">
+                    <div>
+                        <div style="color:var(--white); font-size:0.9rem;">digest_20260314_141631_f79cd173.pdf</div>
+                        <div style="color:var(--text-secondary); font-size:0.8rem;">
+                            14-03-2026 02:19 PM | 5.1 KB
+                        </div>
+                    </div>
+                    <a href="/download/digest/digest_20260314_141631_f79cd173.pdf"
+                        class="btn btn-small btn-outline">⬇ Download</a>
+                </li>
+                
+                <li class="recent-item">
+                    <div>
+                        <div style="color:var(--white); font-size:0.9rem;">digest_20260314_093308_7114a79c.pdf</div>
+                        <div style="color:var(--text-secondary); font-size:0.8rem;">
+                            14-03-2026 09:33 AM | 131.9 KB
+                        </div>
+                    </div>
+                    <a href="/download/digest/digest_20260314_093308_7114a79c.pdf"
+                        class="btn btn-small btn-outline">⬇ Download</a>
+                </li>
+                
+                <li class="recent-item">
+                    <div>
+                        <div style="color:var(--white); font-size:0.9rem;">digest_20260314_092626_c4a5598d.pdf</div>
+                        <div style="color:var(--text-secondary); font-size:0.8rem;">
+                            14-03-2026 09:26 AM | 47.9 KB
+                        </div>
+                    </div>
+                    <a href="/download/digest/digest_20260314_092626_c4a5598d.pdf"
+                        class="btn btn-small btn-outline">⬇ Download</a>
+                </li>
+                
+                <li class="recent-item">
+                    <div>
+                        <div style="color:var(--white); font-size:0.9rem;">digest_20260314_092108_27b46cdf.pdf</div>
+                        <div style="color:var(--text-secondary); font-size:0.8rem;">
+                            14-03-2026 09:21 AM | 33.2 KB
+                        </div>
+                    </div>
+                    <a href="/download/digest/digest_20260314_092108_27b46cdf.pdf"
+                        class="btn btn-small btn-outline">⬇ Download</a>
+                </li>
+                
+                <li class="recent-item">
+                    <div>
+                        <div style="color:var(--white); font-size:0.9rem;">digest_20260314_085023_1876dae8.pdf</div>
+                        <div style="color:var(--text-secondary); font-size:0.8rem;">
+                            14-03-2026 08:50 AM | 54.7 KB
+                        </div>
+                    </div>
+                    <a href="/download/digest/digest_20260314_085023_1876dae8.pdf"
+                        class="btn btn-small btn-outline">⬇ Download</a>
+                </li>
+                
+                <li class="recent-item">
+                    <div>
+                        <div style="color:var(--white); font-size:0.9rem;">digest_20260314_074857_e310b188.pdf</div>
+                        <div style="color:var(--text-secondary); font-size:0.8rem;">
+                            14-03-2026 07:49 AM | 2.3 KB
+                        </div>
+                    </div>
+                    <a href="/download/digest/digest_20260314_074857_e310b188.pdf"
+                        class="btn btn-small btn-outline">⬇ Download</a>
+                </li>
+                
+                <li class="recent-item">
+                    <div>
+                        <div style="color:var(--white); font-size:0.9rem;">digest_20260314_065925_c64cd895.pdf</div>
+                        <div style="color:var(--text-secondary); font-size:0.8rem;">
+                            14-03-2026 06:59 AM | 45.6 KB
+                        </div>
+                    </div>
+                    <a href="/download/digest/digest_20260314_065925_c64cd895.pdf"
+                        class="btn btn-small btn-outline">⬇ Download</a>
+                </li>
+                
+            </ul>
+            
+        </div>
+
+        <!-- ===== RESULTS SECTION ===== -->
+        
+        <div class="digest-results" id="resultsArea">
+            <h2 style="color:var(--gold); margin-bottom:1.5rem;">Pipeline Results</h2>
+
+            
+            <div class="download-banner">
+                <div>
+                    <h3 style="margin:0 0 0.25rem; color:var(--white);">PDF Digest Generated Successfully</h3>
+                    <p style="margin:0; color:var(--text-secondary);">4 articles processed
+                        into a structured intelligence report.</p>
+                </div>
+                <a href="/download/digest/digest_20260314_141631_f79cd173.pdf" class="btn btn-primary">⬇ Download PDF Report</a>
+            </div>
+            
+
+            <!-- Cluster Groups (Scenarios 3–6) -->
+            
+            <h3 style="color:var(--gold); margin-bottom:1rem;">Incident Groups (4)</h3>
+            
+            <div
+                style="background:var(--card-bg); border:1px solid var(--border-gold); border-radius:var(--radius-md); margin-bottom:1.5rem; overflow:hidden;">
+                <!-- Group Header -->
+                <div
+                    style="background:rgba(20,40,80,0.9); padding:1rem 1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <span style="color:#ffd700; font-weight:bold; font-size:1rem;">(Rural)</span>
+                        <span style="margin-left:1rem; font-size:0.8rem; color:var(--text-secondary);">1 source(s)</span>
+                    </div>
+                    
+                </div>
+                <!-- Summary -->
+                
+                <div
+                    style="padding:0.75rem 1.5rem; background:rgba(235,240,255,0.04); border-bottom:1px solid var(--border-color);">
+                    <small style="color:var(--text-secondary);">📝 (&#39;Reported by Andhrajyothi_AP.docx. www.andhrajyothy.com : Celebrate this Sankranti in style with VB-GRAMG RAMRAJMAWING PANCHELU LTURE CLUB MATCHING DHOTIS « SHIRTS and shirts. On MTech (CSE, ECE) MEDICINE Maes ‘COMMERCE.&#39;, [])</small>
+                </div>
+                
+                <!-- Competing Views -->
+                
+                <!-- Article Cards in Group -->
+                <div style="padding:1rem 1.5rem 0.5rem;">
+                    
+                    <div
+                        style="padding:0.75rem; border:1px solid var(--border-color); border-radius:6px; margin-bottom:0.75rem;">
+                        <div style="color:var(--white); font-weight:600; font-size:0.95rem; margin-bottom:0.3rem;">(Rural)</div>
+                        <div style="font-size:0.82rem; color:var(--text-secondary);">
+                            <span>📰 <strong>Andhrajyothi_AP.docx</strong></span>
+                            
+                            
+                        </div>
+                        
+                        <div style="margin-top:0.4rem; font-size:0.78rem; color:#7cfc00;">✓ Not in specified districts: Vijayawada, Guntur</div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div
+                style="background:var(--card-bg); border:1px solid var(--border-gold); border-radius:var(--radius-md); margin-bottom:1.5rem; overflow:hidden;">
+                <!-- Group Header -->
+                <div
+                    style="background:rgba(20,40,80,0.9); padding:1rem 1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <span style="color:#ffd700; font-weight:bold; font-size:1rem;">com (GenerallHons)</span>
+                        <span style="margin-left:1rem; font-size:0.8rem; color:var(--text-secondary);">1 source(s)</span>
+                    </div>
+                    
+                </div>
+                <!-- Summary -->
+                
+                <div
+                    style="padding:0.75rem 1.5rem; background:rgba(235,240,255,0.04); border-bottom:1px solid var(--border-color);">
+                    <small style="color:var(--text-secondary);">📝 (&#39;Reported by Andhrajyothi_AP.docx. B.Com (Hons) - ACCA CMA /CFA/ CA ants BA (Hons) in Performing Arts Law BBA, LLB (ons) / BA, LLE Hons) UB Hons) / LCM, ARCHITECTURE Bachelor of Architecture (Arch) DesiGN.&#39;, [])</small>
+                </div>
+                
+                <!-- Competing Views -->
+                
+                <!-- Article Cards in Group -->
+                <div style="padding:1rem 1.5rem 0.5rem;">
+                    
+                    <div
+                        style="padding:0.75rem; border:1px solid var(--border-color); border-radius:6px; margin-bottom:0.75rem;">
+                        <div style="color:var(--white); font-weight:600; font-size:0.95rem; margin-bottom:0.3rem;">com (GenerallHons)</div>
+                        <div style="font-size:0.82rem; color:var(--text-secondary);">
+                            <span>📰 <strong>Andhrajyothi_AP.docx</strong></span>
+                            
+                            
+                        </div>
+                        
+                        <div style="margin-top:0.4rem; font-size:0.78rem; color:#7cfc00;">✓ Not in specified districts: Vijayawada, Guntur</div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div
+                style="background:var(--card-bg); border:1px solid var(--border-gold); border-radius:var(--radius-md); margin-bottom:1.5rem; overflow:hidden;">
+                <!-- Group Header -->
+                <div
+                    style="background:rgba(20,40,80,0.9); padding:1rem 1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <span style="color:#ffd700; font-weight:bold; font-size:1rem;">Jagan Durshargu.. Nayavanchaku</span>
+                        <span style="margin-left:1rem; font-size:0.8rem; color:var(--text-secondary);">1 source(s)</span>
+                    </div>
+                    
+                </div>
+                <!-- Summary -->
+                
+                <div
+                    style="padding:0.75rem 1.5rem; background:rgba(235,240,255,0.04); border-bottom:1px solid var(--border-color);">
+                    <small style="color:var(--text-secondary);">📝 (&#39;Reported by Andhrajyothi_AP.docx. 4 He was able to release his venom on Amaravati. © Mylavaram MLA Spring 10 (Andhra Jyoti): Special Special Paladugu Lakshmana Rao, Secretary, Siddhartha Akademi Vijayawada B © Vigilant officials for t.&#39;, [])</small>
+                </div>
+                
+                <!-- Competing Views -->
+                
+                <!-- Article Cards in Group -->
+                <div style="padding:1rem 1.5rem 0.5rem;">
+                    
+                    <div
+                        style="padding:0.75rem; border:1px solid var(--border-color); border-radius:6px; margin-bottom:0.75rem;">
+                        <div style="color:var(--white); font-weight:600; font-size:0.95rem; margin-bottom:0.3rem;">Jagan Durshargu.. Nayavanchaku</div>
+                        <div style="font-size:0.82rem; color:var(--text-secondary);">
+                            <span>📰 <strong>Andhrajyothi_AP.docx</strong></span>
+                            
+                            
+                        </div>
+                        
+                        <div style="margin-top:0.4rem; font-size:0.78rem; color:#7cfc00;">✓ No crime keywords found</div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div
+                style="background:var(--card-bg); border:1px solid var(--border-gold); border-radius:var(--radius-md); margin-bottom:1.5rem; overflow:hidden;">
+                <!-- Group Header -->
+                <div
+                    style="background:rgba(20,40,80,0.9); padding:1rem 1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <span style="color:#ffd700; font-weight:bold; font-size:1rem;">Keane</span>
+                        <span style="margin-left:1rem; font-size:0.8rem; color:var(--text-secondary);">1 source(s)</span>
+                    </div>
+                    
+                </div>
+                <!-- Summary -->
+                
+                <div
+                    style="padding:0.75rem 1.5rem; background:rgba(235,240,255,0.04); border-bottom:1px solid var(--border-color);">
+                    <small style="color:var(--text-secondary);">📝 (&#39;Reported by Andhrajyothi_AP.docx. acon, kamaiyathopta, movie | PSs Mom. C9402 42413 60004 98945, 94410 83767 on | T9-250006. ‘aso-250062 | So 8977759977, 9618200171 e Vijayawada, mais 25 Bf | COMPANY Soc SO. (assonsb 2 tod ed fot: Rad.&#39;, [])</small>
+                </div>
+                
+                <!-- Competing Views -->
+                
+                <!-- Article Cards in Group -->
+                <div style="padding:1rem 1.5rem 0.5rem;">
+                    
+                    <div
+                        style="padding:0.75rem; border:1px solid var(--border-color); border-radius:6px; margin-bottom:0.75rem;">
+                        <div style="color:var(--white); font-weight:600; font-size:0.95rem; margin-bottom:0.3rem;">259967 Keane</div>
+                        <div style="font-size:0.82rem; color:var(--text-secondary);">
+                            <span>📰 <strong>Andhrajyothi_AP.docx</strong></span>
+                            
+                            
+                        </div>
+                        
+                        <div style="margin-top:0.4rem; font-size:0.78rem; color:#7cfc00;">✓ Excluded: contains &#39;movie&#39;</div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+
+            <!-- Flat Article List fallback (if no cluster_groups) -->
+            
+
+            <!-- Competing Views Section -->
+            
+        </div>
+        
+
+    </div>
+
+    <footer class="site-footer" style="margin-top:4rem;">
+        <p>© 2025 <span>Crime Intelligence Unit</span> — Andhra Pradesh Police Department | Confidential</p>
+    </footer>
+
+    <script src="/static/script.js"></script>
+    <script>
+        // Show selected file names
+        document.getElementById('fileInput').addEventListener('change', function () {
+            const names = Array.from(this.files).map(f => f.name).join(', ');
+            document.getElementById('fileNames').textContent = names ? `Selected: ${names}` : '';
+        });
+
+        // Show spinner on submit
+        document.getElementById('digestForm').addEventListener('submit', function () {
+            document.getElementById('digestSubmitBtn').disabled = true;
+            document.getElementById('digestSubmitBtn').innerHTML = '<span class="loading"></span> Starting Pipeline...';
+            document.getElementById('processingSpinner').style.display = 'block';
+        });
+
+        // Scroll to results
+        const resultsArea = document.getElementById('resultsArea');
+        if (resultsArea) {
+            setTimeout(() => resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+        }
+    </script>
+</body>
+
+</html>
