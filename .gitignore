@@ -3,3 +3,9 @@ __pycache__/
 data/generated/
 data/uploads_tmp/
 .env
+*.pdf
+test/
+__pycache__/
+*.pyc
+.env
+*.txt
